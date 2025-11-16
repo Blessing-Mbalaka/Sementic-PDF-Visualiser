@@ -4,7 +4,7 @@ from django.conf import settings
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.core.files.base import ContentFile
 from .models import Document, KnowledgeGraph, GraphNode, GraphEdge
 from .serializers import (
@@ -25,7 +25,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentSerializer
     parser_classes = (MultiPartParser, FormParser)
     
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], parser_classes=[JSONParser, MultiPartParser, FormParser])
     def process(self, request, pk=None):
         """Process a document to extract knowledge graph"""
         document = self.get_object()
